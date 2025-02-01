@@ -295,6 +295,7 @@ export class PolinomiosService {
             if (!polinomios || polinomios.length < 2) {
                 throw new Error('Se requieren al menos dos polinomios');
             }
+            console.log('polinomio server: ', polinomios)
     
             let resultado = this.separarTerminos(polinomios[0])
                 .map(t => this.normalizarTermino(t));

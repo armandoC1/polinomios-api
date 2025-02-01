@@ -11,6 +11,7 @@ export class PolinomiosController {
 
   @Post('suma')
   sumarPolinomios(@Body() dto: OperacionPolinomiosDto) {
+    console.log('contro ',dto.polinomios)
     return this.polinomiosService.operarSuma(dto.polinomios);
   }
 
