@@ -295,7 +295,8 @@ export class PolinomiosService {
             if (!polinomios || polinomios.length < 2) {
                 throw new Error('Se requieren al menos dos polinomios');
             }
-            console.log('polinomio server: ', polinomios)
+    
+            console.log('Polinomios recibidos:', polinomios);
     
             let resultado = this.separarTerminos(polinomios[0])
                 .map(t => this.normalizarTermino(t));
@@ -303,8 +304,12 @@ export class PolinomiosService {
             let explicacion = `Se multiplicaron los polinomios aplicando la propiedad distributiva:\n\n`;
     
             for (let i = 1; i < polinomios.length; i++) {
+                console.log(`Procesando polinomio ${i + 1}:`, polinomios[i]);
+    
                 const terminosActuales = this.separarTerminos(polinomios[i])
                     .map(t => this.normalizarTermino(t));
+    
+                console.log(`Términos del polinomio actual (${i + 1}):`, terminosActuales);
     
                 const nuevosTerminos: TerminoNormalizado[] = [];
     
@@ -314,26 +319,34 @@ export class PolinomiosService {
                         nuevosTerminos.push(terminoMultiplicado);
     
                         explicacion += `🔹 Multiplicación de **(${this.fraccionAString(t1.coeficiente)}${t1.variable})** × **(${this.fraccionAString(t2.coeficiente)}${t2.variable})**\n`;
-                        explicacion += `   ➤ Coeficientes multiplicados: ${this.fraccionAString(t1.coeficiente)} × ${this.fraccionAString(t2.coeficiente)}\n`;
-                        explicacion += `   ➤ Variables multiplicadas: ${t1.variable || '1'} × ${t2.variable || '1'}\n`;
+                        explicacion += `   ➤ Coeficientes multiplicados: ${this.fraccionAString(t1.coeficiente)} × ${this.fraccionAString(t2.coeficiente)} = ${this.fraccionAString(terminoMultiplicado.coeficiente)}\n`;
+                        explicacion += `   ➤ Variables multiplicadas: ${t1.variable || '1'} × ${t2.variable || '1'} = ${terminoMultiplicado.variable}\n`;
                         explicacion += `   ➤ Resultado: **${this.fraccionAString(terminoMultiplicado.coeficiente)}${terminoMultiplicado.variable}**\n\n`;
                     });
                 });
     
                 resultado = nuevosTerminos;
+                console.log(`Resultado parcial después de multiplicar con el polinomio ${i + 1}:`, resultado);
             }
     
+            // Combinar términos semejantes
             const terminosCombinados = this.combinarTerminosSimilares(resultado);
+            console.log('Términos combinados:', terminosCombinados);
+    
+            // Ordenar términos
             const resultadoFinal = this.ordenarTerminos(terminosCombinados);
+            console.log('Resultado final ordenado:', resultadoFinal);
     
             return {
                 resultado: resultadoFinal,
                 explicacion
             };
         } catch (error) {
+            console.error('Error en la multiplicación:', error);
             return { error: `Error en la multiplicación: ${error.message}` };
         }
     }
+    
     
     operarDivision(polinomios: string[]): { resultado: string, explicacion: string } | { error: string } {
         try {
